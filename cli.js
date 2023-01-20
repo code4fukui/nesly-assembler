@@ -1,10 +1,14 @@
 #!/usr/bin/node
 
-var log = require('bole')('cli')
-var program = require('commander')
-var Compiler = require('./index')
+import bole from "https://code4fukui.github.io/bole/bole.js";
+import { program } from 'https://code4fukui.github.io/commander-es/index.js';
+import Compiler from './index.js';
+import pkg from "./package.json" assert { type: "json" };
+
+const log = bole('cli')
+
 var compiler = new Compiler()
-var version = require('./package').version
+var version = pkg.version
 
 /**
  * setup command line parsing
@@ -14,18 +18,20 @@ program
   .usage('[options]')
   .option('-i, --input-file [value]', 'Input file')
   .option('-o, --output-file', 'Output file')
-  .parse(process.argv)
+  .parse()
 
-var input = program.args[0] || program.inputFile
-var code = compiler.openFile(input)
-var output = program.outputFile || program.args[1] || 'out.nes'
+const input = program.args[0] || program.inputFile
+const code = compiler.openFile(input)
+const output = program.outputFile || program.args[1] || 'out.nes'
 
 try {
-  var bin = compiler.nesCompiler(code)
+  const bin = compiler.nesCompiler(code)
+  console.log("BIN", bin);
   compiler.writeFile(output, bin)
 } catch (e) {
+  console.log("EE", e);
   e.forEach(function (error) {
     log.error('Error: ', error)
   })
-  process.exit(1)
+  Deno.exit(1)
 }

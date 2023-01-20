@@ -1,12 +1,15 @@
-const fs = require('fs')
-const log = require('bole')('compiler')
-const analyse = require('./lib/analyzer')
-const CPU = require('./lib/c6502')
+import bole from "https://code4fukui.github.io/bole/bole.js";
+import fs from "./fs.js";
+import analyse from './lib/analyzer.js'
+import CPU from './lib/c6502.js'
+import Cartridge from './lib/cartridge.js'
+import Directives from './lib/directives.js'
+import asm65Tokens from './lib/tokens.js'
+
+const log = bole('compiler')
+
 const cpu = new CPU()
-const Cartridge = require('./lib/cartridge')
-const Directives = require('./lib/directives')
 const directives = new Directives()
-const asm65Tokens = require('./lib/tokens')
 
 function Compiler () {}
 
@@ -211,6 +214,7 @@ Compiler.prototype.syntax = function (tokens) {
   var erros = []
   var move = false
   while (x < tokens.length) {
+    console.log(x)
     if (tLabel(tokens, x)) {
       log.info('pushing label ', getValue(tokens[x]))
       labels.push(getValue(tokens[x]))
@@ -262,6 +266,7 @@ Compiler.prototype.syntax = function (tokens) {
     }
   }
   if (erros.length > 0) {
+    console.log(erros);
     var e = new Error()
     e.name = 'Syntax Error'
     e.message = 'There were found ' + erros.length + ' erros:\n'
@@ -451,6 +456,7 @@ Compiler.prototype.nesCompiler = function (code) {
   try {
     ast = this.syntax(tokens)
   } catch (e) {
+    console.log(e)
     ast = e.ast
     erros = erros.concat(e.message)
   }
@@ -468,4 +474,4 @@ Compiler.prototype.nesCompiler = function (code) {
   }
 }
 
-module.exports = Compiler
+export default Compiler

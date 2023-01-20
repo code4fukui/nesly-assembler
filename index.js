@@ -1,7 +1,8 @@
-const bole = require('bole')
+import bole from "https://code4fukui.github.io/bole/bole.js";
 bole.output([
-  { level: 'info', stream: process.stdout },
-  { level: 'debug', stream: process.stdout },
-  { level: 'error', stream: process.stdout }
+  { level: 'info', stream: Deno.stdout },
+  { level: 'debug', stream: Deno.stdout },
+  { level: 'error', stream: Deno.stdout }
 ])
-module.exports = require('./compiler')
+import Compiler from "./compiler.js";
+export default Compiler;
